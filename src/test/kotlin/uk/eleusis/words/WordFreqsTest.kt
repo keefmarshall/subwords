@@ -1,7 +1,6 @@
 package uk.eleusis.words
 
 import org.apache.commons.collections4.bag.TreeBag
-import org.junit.Assert.*
 import org.junit.Test
 
 class WordFreqsTest {
@@ -20,21 +19,38 @@ class WordFreqsTest {
     }
 
     @Test
+    fun threeLetterWords() {
+        nLetterWords(3)
+    }
+
+    @Test
+    fun fourLetterWords() {
+        nLetterWords(4)
+    }
+
+    @Test
     fun nineLetterWords() {
+        nLetterWords(9)
+    }
+
+    private fun nLetterWords(n: Int) {
         val wordFreqs = WordFreqs()
         val list = wordFreqs.loadFile(WORD_FREQ_FILE)
-        val nineLetterWordFs = list.filter { it.word.length == 9 }
-        println("Nine letter WordF instances: ${nineLetterWordFs.count()}")
-        val nineLetterWordBag = TreeBag<String>()
-        nineLetterWordFs.map { nineLetterWordBag.add(it.word) }
-        println("Nine letter unique words: ${nineLetterWordBag.uniqueSet().size}")
-        nineLetterWordBag.uniqueSet().drop(4000).take(50).map(::println)
+        val nLetterWordFs = list.filter { it.word.length == n }
+        println("$n letter WordF instances: ${nLetterWordFs.count()}")
+        val nLetterWordBag = TreeBag<String>()
+        nLetterWordFs.map { nLetterWordBag.add(it.word) }
+        println("$n letter unique words: ${nLetterWordBag.uniqueSet().size}")
+        nLetterWordBag.uniqueSet().drop(500).take(50).map(::println)
+
     }
 
     @Test
     fun wordTypes() {
         val wordFreqs = WordFreqs()
         val list = wordFreqs.loadFile(WORD_FREQ_FILE)
-        list.filter { it.word == "jordanian" }.map(::println)
+        list.filter { it.word == "mdc" }.map(::println)
+        list.filter { it.word == "doug" }.map(::println)
     }
 }
+
