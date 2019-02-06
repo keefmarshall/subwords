@@ -10,14 +10,17 @@ import java.util.*
 
 class WordFreqs {
     val wordIndex = ArrayListValuedHashMap<String, WordF>()
+    val scoredWords = TreeMap<String, Int>()
 
-    fun loadFile(path: String): List<WordF> {
-        val file = File(path)
+    fun loadFile(freqPath: String, ukWordsPath: String): List<WordF> {
+        var ukWordSet = WordFile.loadFile(ukWordsPath).toSet()
         wordIndex.clear()
-        return file.useLines { lines ->
+        val freqFile = File(freqPath)
+        return freqFile.useLines { lines ->
             lines.map(::parseFreqLine)
-                    .filter { it.corpusFreq > 10 } // appears in more than ten documents
-                    .filter { it.word.length > 2 }
+                    .filter { ukWordSet.contains(it.word) } // match against UKACD18
+//                    .filter { it.corpusFreq >= 10 } // appears in at least ten documents
+                    .filter { it.word.length > 2 } // three letters and above
                     .filter { isAllLetters(it.word) } // NB the Kilgarriff files have e.g. &eacute; symbols in there
                     .filter { !it.category.contains("np0", true) } // no proper nouns
                     .map {
@@ -28,6 +31,20 @@ class WordFreqs {
                     .toList() // Returning sequence doesn't work as file is closed when we exit this block
         }
     }
+
+    fun scoreWords() =
+        wordIndex.asMap().map {
+            val word = it.key
+            val score = it.value
+                    .map { wf ->
+                       Math.log(wf.freq.toDouble()) +
+                        (2 * Math.log(wf.corpusFreq.toDouble())) -
+                        ((word.length - 3) / 3)
+                    }
+                    .map { score -> Math.ceil(Math.pow(28 - score, 2.0) / 50) }
+                    .min()
+            (word to Math.round(score ?: 1.0))
+        }
 
     private fun parseFreqLine(line: String): WordF {
         val entries = line.split(" ")
