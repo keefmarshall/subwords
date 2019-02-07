@@ -69,9 +69,22 @@ class WordFreqsTest {
         wordFreqs.loadFile(WORD_FREQ_FILE, UK_WORDS_FILE)
         val scoredWords = wordFreqs.scoreWords()
         assertEquals(56486, scoredWords.size)
-        scoredWords.drop(500).take(100).forEach(::println)
-        println("Min score: ${scoredWords.minBy { it.second?.toDouble() ?: 0.0 }}")
-        println("Max score: ${scoredWords.maxBy { it.second?.toDouble() ?: 0.0 }}")
+        scoredWords.drop(1000).take(200).forEach(::println)
+        println("Min score: ${scoredWords.minBy { it.second.toDouble() }}")
+        println("Max score: ${scoredWords.maxBy { it.second.toDouble() }}")
+
+        // score distribution
+        val distBag = TreeBag<Int>()
+        scoredWords.forEach { distBag.add(it.second) }
+        distBag.uniqueSet().forEach {
+            println("${it} ${distBag.getCount(it)}")
+        }
+
+        println("Words with score 2:")
+        scoredWords.filter { it.second == 2 }.map { it.first }.sorted().forEach(::println)
+
+        println("Score for cat: ${scoredWords.filter { it.first == "cat" }}")
+        println("Score for dog: ${scoredWords.filter { it.first == "dog" }}")
     }
 }
 

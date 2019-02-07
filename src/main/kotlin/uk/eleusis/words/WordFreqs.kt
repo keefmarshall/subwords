@@ -32,18 +32,18 @@ class WordFreqs {
         }
     }
 
-    fun scoreWords() =
+    fun scoreWords(): List<Pair<String, Int>> =
         wordIndex.asMap().map {
             val word = it.key
             val score = it.value
                     .map { wf ->
                        Math.log(wf.freq.toDouble()) +
-                        (2 * Math.log(wf.corpusFreq.toDouble())) -
-                        ((word.length - 3) / 3)
+                        (3 * Math.log(wf.corpusFreq.toDouble())) -
+                        (2.5 * (word.length - 3))
                     }
-                    .map { score -> Math.ceil(Math.pow(28 - score, 2.0) / 50) }
+                    .map { score -> Math.round(Math.pow(28 - score, 1.75) / 50.0) + 1}
                     .min()
-            (word to Math.round(score ?: 1.0))
+            (word to (score?.toInt() ?: 0))
         }
 
     private fun parseFreqLine(line: String): WordF {
