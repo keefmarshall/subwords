@@ -12,6 +12,7 @@ class WordFreqs {
     val wordIndex = ArrayListValuedHashMap<String, WordF>()
     val scoredWords = TreeMap<String, Int>()
 
+
     fun loadFile(freqPath: String, ukWordsPath: String): List<WordF> {
         var ukWordSet = WordFile.loadFile(ukWordsPath).toSet()
         wordIndex.clear()
@@ -19,7 +20,7 @@ class WordFreqs {
         return freqFile.useLines { lines ->
             lines.map(::parseFreqLine)
                     .filter { ukWordSet.contains(it.word) } // match against UKACD18
-//                    .filter { it.corpusFreq >= 10 } // appears in at least ten documents
+                    .filter { it.corpusFreq >= 2 } // appears in at least 2 documents
                     .filter { it.word.length > 2 } // three letters and above
                     .filter { isAllLetters(it.word) } // NB the Kilgarriff files have e.g. &eacute; symbols in there
                     .filter { !it.category.contains("np0", true) } // no proper nouns

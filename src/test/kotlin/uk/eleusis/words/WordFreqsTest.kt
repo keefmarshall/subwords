@@ -6,8 +6,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class WordFreqsTest {
-    val WORD_FREQ_FILE = "src/main/resources/written.num.o5"
-    val UK_WORDS_FILE = "src/main/resources/UKACD18plus.txt"
+    companion object {
+        val WORD_FREQ_FILE = "src/main/resources/written.al"
+        //    val WORD_FREQ_FILE = "src/main/resources/written.num.o5"
+        val UK_WORDS_FILE = "src/main/resources/UKACD18plus.txt"
+    }
 
     @Test
     fun loadFile() {
@@ -80,11 +83,12 @@ class WordFreqsTest {
             println("${it} ${distBag.getCount(it)}")
         }
 
-        println("Words with score 2:")
-        scoredWords.filter { it.second == 2 }.map { it.first }.sorted().forEach(::println)
+        println("Words with score 5:")
+        scoredWords.filter { it.second == 5 }.map { it.first }.sorted().forEach(::println)
 
         println("Score for cat: ${scoredWords.filter { it.first == "cat" }}")
         println("Score for dog: ${scoredWords.filter { it.first == "dog" }}")
+        println("Score for baht: ${scoredWords.filter { it.first == "baht" }}")
     }
 }
 
